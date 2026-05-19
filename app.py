@@ -29,7 +29,7 @@ st.markdown("""
         padding-bottom: 240px !important; /* Fixed components spacing */
     }
     
-    /* 🛠️ ULTRA FIX: Uploader ka dabba, boundary, shadow sab hatakar sirf plain text rakhne ke liye */
+    /* ULTRA FIX: Uploader ka dabba, boundary, shadow sab hatakar sirf plain text rakhne ke liye */
     [data-testid="stFileUploader"] {
         position: fixed !important;
         bottom: 110px !important;
@@ -38,10 +38,10 @@ st.markdown("""
         max-width: fit-content !important;
         width: auto !important;
         z-index: 999999 !important;
-        background-color: transparent !important; /* Dabba gayab */
+        background-color: transparent !important;
         background: transparent !important;
-        border: none !important; /* Boundary gayab */
-        box-shadow: none !important; /* Shadow gayab */
+        border: none !important;
+        box-shadow: none !important;
         padding: 0px !important;
     }
     
@@ -89,7 +89,6 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
-    
 
 # SECURITY UPGRADE - API KEY
 if "GEMINI_API_KEY" in st.secrets:
@@ -97,8 +96,12 @@ if "GEMINI_API_KEY" in st.secrets:
 else:
     API_KEY = "AIzaSyC38ARVgx_CclzYSDO7SyRJeLQcCvCsNBs"
 
-# Updated initialization format
+# Initialization
 genai.configure(api_key=API_KEY)
+
+# Fix: Ensure messages list is initialized before rendering history
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
 # --- SIDEBAR ---
 with st.sidebar:
@@ -114,7 +117,7 @@ with st.sidebar:
     st.write("---")
     st.caption("Developed with ❤️ by Abhimanyu")
 
-   # --- SIDEBAR SUPPORT SECTION ---
+    # --- SIDEBAR SUPPORT SECTION ---
     st.markdown("---")
     st.subheader("🔱 Support This Project")
     with st.sidebar.expander("💸 Click here to Scan & Pay"):
@@ -123,14 +126,24 @@ with st.sidebar:
             st.image("qr.jpg", width=200)
         except:
             pass
+
 # Main Screen Heading (Centered via Streamlit Layout)
 st.markdown("<h1 style='text-align: center;'>🔱 Hanuman AI</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: #a3a8b4;'>Gyan, Buddhi, Vision aur Voice ke sath — Aapke har sawaal aur kaam ka saathi</p>", unsafe_allow_html=True)
 st.write("---")
 
+# --- DISPLAY CHAT HISTORY ---
+# Fix: Purani chat screen par load rahegi
+for message in st.session_state.messages:
+    avatar = "🔱" if message["role"] == "assistant" else None
+    with st.chat_message(message["role"], avatar=avatar):
+        st.markdown(message["content"])
+        if "audio" in message and os.path.exists(message["audio"]):
+            st.audio(message["audio"], format="audio/mp3")
+
 # --- LOWER CHAT & ATTACHMENT SYSTEM (ChatGPT Style) ---
 
-# 1. File Uploader (Chat bar ke upar bina gap ke merge rahega)
+# 1. File Uploader
 uploaded_file = st.file_uploader("➕ Attach Image/File for Hanuman AI", type=["png", "jpg", "jpeg", "txt", "py"], label_visibility="collapsed")
 
 if uploaded_file is not None:
@@ -144,6 +157,7 @@ async def generate_premium_voice(text, filename):
 
 # 3. User Input Box
 if prompt := st.chat_input("Hanuman Ji se kuch bhi poochhein..."):
+    
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
@@ -169,13 +183,11 @@ if prompt := st.chat_input("Hanuman Ji se kuch bhi poochhein..."):
                         contents_payload.append({"data": file_bytes, "mime_type": uploaded_file.type})
                     else:
                         file_text = file_bytes.decode("utf-8")
-                        contents_payload.append(f"\\n\\n[Uploaded File Content:\\n{file_text}]")
+                        contents_payload.append(f"\n\n[Uploaded File Content:\n{file_text}]")
                 
-                response = client.models.generate_content(
-                    model='gemini-2.5-flash',
-                    contents=contents_payload,
-                    config={"system_instruction": system_instruction}
-                )
+                # Fix: Correct client initialization mapping for correct API config
+                model = genai.GenerativeModel('gemini-2.5-flash', system_instruction=system_instruction)
+                response = model.generate_content(contents_payload)
                 break
             except Exception as e:
                 if "503" in str(e) and attempt < max_retries - 1:
@@ -197,11 +209,8 @@ if prompt := st.chat_input("Hanuman Ji se kuch bhi poochhein..."):
                 asyncio.run(generate_premium_voice(clean_text, audio_filename))
                 time.sleep(0.5)
                 
-                # Perfect alignment lock for audio checks
                 if os.path.exists(audio_filename) and os.path.getsize(audio_filename) > 0:
                     st.audio(audio_filename, format="audio/mp3")
-                    if "messages" not in st.session_state:
-                        st.session_state.messages = []
                     st.session_state.messages.append({"role": "assistant", "content": ai_response, "audio": audio_filename})
                 else:
                     st.error("Audio file write error.")
