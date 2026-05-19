@@ -151,3 +151,11 @@ if prompt := st.chat_input("Hanuman Ji se kuch bhi poochhein..."):
                 
             except Exception as voice_err:
                 st.error(f"Text aa gaya par audio me dikkat: {voice_err}")
+# --- SIDEBAR SUPPORT SECTION ---
+st.sidebar.markdown("---")
+st.sidebar.subheader("🔱 Support This Project")
+st.sidebar.write("Agar aapko Hanuman AI pasand aaya, toh aap is QR code ko scan karke project ko support kar sakte hain!")
+try:
+    st.sidebar.image("qr.jpg", use_container_width=True)
+except:
+    pass
