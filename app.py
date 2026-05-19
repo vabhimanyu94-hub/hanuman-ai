@@ -7,7 +7,7 @@ import time
 
 st.set_page_config(page_title="Hanuman AI", page_icon="🔱", layout="wide")
 
-# Custom CSS for Premium Theme & Fixed ChatGPT Style Bottom Layout
+# Custom CSS for Premium Theme & Minimalist Fixed Bottom Layout
 st.markdown("""
 <style>
     /* Saare unnecessary elements hide karne ke liye */
@@ -18,7 +18,7 @@ st.markdown("""
     [data-testid="stAppToolbar"] {display: none !important;}
     footer {display: none !important;}
     
-    /* Layout styling */
+    /* Layout Container alignment */
     div.block-container {
         max-width: 700px !important;
         margin: 0 auto !important;
@@ -26,22 +26,39 @@ st.markdown("""
     
     .stAppViewMain > div > div {
         padding-top: 3rem !important;
-        padding-bottom: 180px !important; /* Spacing for fixed elements */
+        padding-bottom: 220px !important; /* Spacing for fixed elements */
     }
     
-    /* File uploader ko chat bar ke upar ekdum barabar width me center karne ke liye */
+    /* MAGIC CSS: Uploader ko text ke hisab se chota, centered aur format niche karne ke liye */
     [data-testid="stFileUploader"] {
         position: fixed !important;
-        bottom: 95px !important;
+        bottom: 110px !important;
         left: 50% !important;
         transform: translateX(-50%) !important;
-        max-width: 700px !important;
-        width: calc(100% - 2rem) !important;
+        max-width: fit-content !important; /* Text ke hisab se size automatic chota hoga */
+        width: auto !important;
         z-index: 999999 !important;
-        background-color: #0e1117 !important;
+        background-color: #1e222b !important; /* Elegant dark box look */
+        border-radius: 12px !important;
+        padding: 6px 16px !important;
+        border: 1px dashed #4b5563 !important;
     }
     
-    /* Chat input ko screen par perfect barabar align karne ke liye */
+    /* File uploader ka andar ka structure vertical flex karne ke liye (Format Text Niche Jayega) */
+    [data-testid="stFileUploader"] > section > div {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 2px !important;
+    }
+    
+    /* Format description text styling */
+    [data-testid="stFileUploaderDropzoneCaption"] {
+        font-size: 11px !important;
+        color: #9ca3af !important;
+        text-align: center !important;
+    }
+    
+    /* Chat input position fixed logic */
     [data-testid="stChatInput"] {
         position: fixed !important;
         bottom: 30px !important;
