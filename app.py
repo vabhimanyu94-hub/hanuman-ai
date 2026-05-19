@@ -197,14 +197,13 @@ if prompt := st.chat_input("Hanuman Ji se kuch bhi poochhein..."):
                 asyncio.run(generate_premium_voice(clean_text, audio_filename))
                 time.sleep(0.5)
                 
-               if os.path.exists(audio_filename) and os.path.getsize(audio_filename) > 0:
+                # Perfect alignment lock for audio checks
+                if os.path.exists(audio_filename) and os.path.getsize(audio_filename) > 0:
                     st.audio(audio_filename, format="audio/mp3")
                     if "messages" not in st.session_state:
                         st.session_state.messages = []
                     st.session_state.messages.append({"role": "assistant", "content": ai_response, "audio": audio_filename})
                 else:
-                    st.error("Audio file write error."))
-                else:
-                    st.error("Audio block write error.")
+                    st.error("Audio file write error.")
             except Exception as voice_err:
                 st.error(f"Text aa gaya par audio me dikkat: {voice_err}")
