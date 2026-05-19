@@ -7,7 +7,7 @@ import time
 
 st.set_page_config(page_title="Hanuman AI", page_icon="🔱", layout="wide")
 
-# Custom CSS for Premium Theme & Minimalist Fixed Bottom Layout
+# Custom CSS for Premium Theme & Transparent Minimalist Bottom Layout
 st.markdown("""
 <style>
     /* Saare unnecessary elements hide karne ke liye */
@@ -26,39 +26,48 @@ st.markdown("""
     
     .stAppViewMain > div > div {
         padding-top: 3rem !important;
-        padding-bottom: 220px !important; /* Spacing for fixed elements */
+        padding-bottom: 240px !important; /* Fixed components spacing */
     }
     
-    /* MAGIC CSS: Uploader ko text ke hisab se chota, centered aur format niche karne ke liye */
+    /* 🛠️ ULTRA FIX: Uploader ka dabba, boundary, shadow sab hatakar sirf plain text rakhne ke liye */
     [data-testid="stFileUploader"] {
         position: fixed !important;
         bottom: 110px !important;
         left: 50% !important;
         transform: translateX(-50%) !important;
-        max-width: fit-content !important; /* Text ke hisab se size automatic chota hoga */
+        max-width: fit-content !important;
         width: auto !important;
         z-index: 999999 !important;
-        background-color: #1e222b !important; /* Elegant dark box look */
-        border-radius: 12px !important;
-        padding: 6px 16px !important;
-        border: 1px dashed #4b5563 !important;
+        background-color: transparent !important; /* Dabba gayab */
+        background: transparent !important;
+        border: none !important; /* Boundary gayab */
+        box-shadow: none !important; /* Shadow gayab */
+        padding: 0px !important;
     }
     
-    /* File uploader ka andar ka structure vertical flex karne ke liye (Format Text Niche Jayega) */
+    /* Drag and drop wrapper block ko bhi clear transparent karne ke liye */
+    [data-testid="stFileUploader"] > section {
+        background-color: transparent !important;
+        background: transparent !important;
+        border: none !important;
+    }
+    
+    /* Inside box alignment to vertical stack */
     [data-testid="stFileUploader"] > section > div {
         flex-direction: column !important;
         align-items: center !important;
-        gap: 2px !important;
+        gap: 0px !important;
     }
     
-    /* Format description text styling */
+    /* Format label settings (Text ke just neeche nested) */
     [data-testid="stFileUploaderDropzoneCaption"] {
         font-size: 11px !important;
-        color: #9ca3af !important;
+        color: #888888 !important;
         text-align: center !important;
+        margin-top: -2px !important;
     }
     
-    /* Chat input position fixed logic */
+    /* Chat input position lock */
     [data-testid="stChatInput"] {
         position: fixed !important;
         bottom: 30px !important;
@@ -188,9 +197,13 @@ if prompt := st.chat_input("Hanuman Ji se kuch bhi poochhein..."):
                 asyncio.run(generate_premium_voice(clean_text, audio_filename))
                 time.sleep(0.5)
                 
-                if os.path.exists(audio_filename) and os.path.getsize(audio_filename) > 0:
+               if os.path.exists(audio_filename) and os.path.getsize(audio_filename) > 0:
                     st.audio(audio_filename, format="audio/mp3")
+                    if "messages" not in st.session_state:
+                        st.session_state.messages = []
                     st.session_state.messages.append({"role": "assistant", "content": ai_response, "audio": audio_filename})
+                else:
+                    st.error("Audio file write error."))
                 else:
                     st.error("Audio block write error.")
             except Exception as voice_err:
