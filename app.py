@@ -7,7 +7,7 @@ import time
 
 st.set_page_config(page_title="Hanuman AI", page_icon="🔱", layout="wide")
 
-# Custom CSS for Premium Theme & Center Alignment
+# Custom CSS for Premium Theme & Chat Bar Attachment
 st.markdown("""
 <style>
     /* Saare unnecessary elements hide karne ke liye */
@@ -18,23 +18,21 @@ st.markdown("""
     [data-testid="stAppToolbar"] {display: none !important;}
     footer {display: none !important;}
     
-    /* Main Content aur Upload Box ko Ek Sath Merge aur Center karne ke liye */
-    .stAppViewMain > div > div {
-        padding-top: 2rem !important;
-    }
-    
-    /* Heading aur Uploader ko pass laane ke liye spacing zero */
+    /* Center Layout Configuration */
     div.block-container {
         max-width: 700px !important;
         margin: 0 auto !important;
-        text-align: center !important;
     }
     
-    /* File Uploader styling aur center border alignment */
+    .stAppViewMain > div > div {
+        padding-top: 3rem !important;
+    }
+    
+    /* File uploader ko chat bar ke upar barabar chipkane ke liye custom styling */
     [data-testid="stFileUploader"] {
         max-width: 100% !important;
-        margin-top: -15px !important;
-        padding-top: 0px !important;
+        margin-top: -10px !important;
+        padding-bottom: 10px !important;
     }
     
     /* Sidebar styling */
@@ -82,35 +80,26 @@ with st.sidebar:
             st.image("qr.jpg", width=200)
         except:
             pass
-# Main Screen Heading (Asli Streamlit Title - Centered)
-st.title("🔱 Hanuman AI")
-st.caption("Gyan, Buddhi, Vision aur Voice ke sath — Aapke har sawaal aur kaam ka saathi")
+# Main Screen Heading (Centered via Streamlit Layout)
+st.markdown("<h1 style='text-align: center;'>🔱 Hanuman AI</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #a3a8b4;'>Gyan, Buddhi, Vision aur Voice ke sath — Aapke har sawaal aur kaam ka saathi</p>", unsafe_allow_html=True)
+st.write("---")
 
-# Chat history initialize karna
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+# --- LOWER CHAT & ATTACHMENT SYSTEM (ChatGPT Style) ---
 
-# Purani chat screen par dikhane ke liye
-for message in st.session_state.messages:
-    with st.chat_message(message["role"], avatar="🔱" if message["role"]=="assistant" else None):
-        st.markdown(message["content"])
-        if message["role"] == "assistant" and "audio" in message:
-            if os.path.exists(message["audio"]):
-                st.audio(message["audio"], format="audio/mp3")
-
-# FILE / IMAGE UPLOADER
-uploaded_file = st.file_uploader("📁 Koi bhi Image ya File upload karein aur uske baare me poochhein:", type=["png", "jpg", "jpeg", "txt", "py"])
+# 1. File Uploader (Chat bar ke upar bina gap ke merge rahega)
+uploaded_file = st.file_uploader("➕ Attach Image/File for Hanuman AI", type=["png", "jpg", "jpeg", "txt", "py"], label_visibility="collapsed")
 
 if uploaded_file is not None:
-    st.success(f"Successfully Uploaded: {uploaded_file.name}")
+    st.success(f"📎 Attached: {uploaded_file.name}")
 
-# Function to generate premium voice
+# 2. Premium Voice Function
 async def generate_premium_voice(text, filename):
     voice = "hi-IN-MadhurNeural"
     communicate = edge_tts.Communicate(text, voice, rate="+10%")
     await communicate.save(filename)
 
-# User Input Box
+# 3. User Input Box
 if prompt := st.chat_input("Hanuman Ji se kuch bhi poochhein..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
