@@ -26,25 +26,29 @@ st.markdown("""
     
     .stAppViewMain > div > div {
         padding-top: 3rem !important;
-        padding-bottom: 120px !important; /* Taaki chat history chat input ke piche na chhupe */
+        padding-bottom: 180px !important; /* Spacing for fixed elements */
     }
     
-    /* MAGIC TRICK: File uploader ko poori tarah niche chat input ke sath fix karne ke liye */
+    /* File uploader ko chat bar ke upar ekdum barabar width me center karne ke liye */
     [data-testid="stFileUploader"] {
         position: fixed !important;
-        bottom: 95px !important; /* Chat input ke just upar space */
+        bottom: 95px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
         max-width: 700px !important;
-        width: 100% !important;
+        width: calc(100% - 2rem) !important;
         z-index: 999999 !important;
-        background-color: #0e1117 !important; /* Match default theme */
+        background-color: #0e1117 !important;
     }
     
-    /* Fixed Chat input block layout placement align karne ke liye */
+    /* Chat input ko screen par perfect barabar align karne ke liye */
     [data-testid="stChatInput"] {
         position: fixed !important;
         bottom: 30px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
         max-width: 700px !important;
-        width: 100% !important;
+        width: calc(100% - 2rem) !important;
         z-index: 1000000 !important;
     }
     
