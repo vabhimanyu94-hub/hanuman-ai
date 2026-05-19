@@ -99,7 +99,7 @@ else:
 # Initialization
 genai.configure(api_key=API_KEY)
 
-# Fix: Ensure messages list is initialized before rendering history
+# Ensure messages list is initialized before rendering history
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
@@ -133,7 +133,6 @@ st.markdown("<p style='text-align: center; color: #a3a8b4;'>Gyan, Buddhi, Vision
 st.write("---")
 
 # --- DISPLAY CHAT HISTORY ---
-# Fix: Purani chat screen par load rahegi
 for message in st.session_state.messages:
     avatar = "🔱" if message["role"] == "assistant" else None
     with st.chat_message(message["role"], avatar=avatar):
@@ -185,16 +184,14 @@ if prompt := st.chat_input("Hanuman Ji se kuch bhi poochhein..."):
                         file_text = file_bytes.decode("utf-8")
                         contents_payload.append(f"\n\n[Uploaded File Content:\n{file_text}]")
                 
-                # Fix: Correct client initialization mapping for correct API config
                 model = genai.GenerativeModel('gemini-2.5-flash', system_instruction=system_instruction)
                 response = model.generate_content(contents_payload)
                 break
-           except Exception as e:
+            except Exception as e:
                 if "503" in str(e) and attempt < max_retries - 1:
                     message_placeholder.warning("Server busy hai, fir se koshish kar raha hoon...")
                     time.sleep(2)
                 else:
-                    # Fix: Quota ya bade error par purana galat message history se turant saaf karo
                     if "messages" in st.session_state and len(st.session_state.messages) > 0:
                         st.session_state.messages.pop()
                     st.error(f"Kuch galti hui: {e}")
