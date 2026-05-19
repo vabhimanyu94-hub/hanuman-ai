@@ -27,7 +27,8 @@ if "GEMINI_API_KEY" in st.secrets:
 else:
     API_KEY = "AIzaSyC38ARVgx_CclzYSDO7SyRJeLQcCvCsNBs"
 
-client = genai.Client(api_key=API_KEY)
+# Updated initialization format
+genai.configure(api_key=API_KEY)
 
 # --- SIDEBAR ---
 with st.sidebar:
