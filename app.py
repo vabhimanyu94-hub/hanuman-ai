@@ -7,9 +7,14 @@ import time
 
 st.set_page_config(page_title="Hanuman AI", page_icon="🔱", layout="wide")
 
-# Custom CSS for Premium Theme
+# Custom CSS for Premium Theme & Hiding GitHub/Streamlit Elements
 st.markdown("""
 <style>
+    /* GitHub Icon aur Fork button hide karne ke liye */
+    #MainMenu, header, footer {visibility: hidden;}
+    .stAppDeployButton {display: none !important;}
+    [data-testid="stMainMenuGitHubIcon"] {display: none !important;}
+    
     [data-testid="stSidebar"] {
         background-color: #0e1117;
     }
@@ -20,6 +25,7 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
+    
 
 # SECURITY UPGRADE - API KEY
 if "GEMINI_API_KEY" in st.secrets:
