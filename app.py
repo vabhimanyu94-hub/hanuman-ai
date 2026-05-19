@@ -43,7 +43,7 @@ with st.sidebar:
     st.write("---")
     st.caption("Developed with ❤️ by Abhimanyu")
 
-    # --- SIDEBAR SUPPORT SECTION ---
+   # --- SIDEBAR SUPPORT SECTION ---
     st.markdown("---")
     st.subheader("🔱 Support This Project")
     with st.sidebar.expander("💸 Click here to Scan & Pay"):
@@ -52,7 +52,6 @@ with st.sidebar:
             st.image("qr.jpg", width=200)
         except:
             pass
-
 # Main Screen Heading
 st.title("🔱 Hanuman AI")
 st.caption("Gyan, Buddhi, Vision aur Voice ke sath — Aapke har sawaal aur kaam ka saathi")
