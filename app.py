@@ -154,8 +154,9 @@ if prompt := st.chat_input("Hanuman Ji se kuch bhi poochhein..."):
 # --- SIDEBAR SUPPORT SECTION ---
 st.sidebar.markdown("---")
 st.sidebar.subheader("🔱 Support This Project")
-st.sidebar.write("Agar aapko Hanuman AI pasand aaya, toh aap is QR code ko scan karke project ko support kar sakte hain!")
-try:
-    st.sidebar.image("qr.jpg", use_container_width=True)
-except:
-    pass
+with st.sidebar.expander("💸 Click here to Scan & Pay"):
+    st.write("Agar aapko Hanuman AI pasand aaya, toh aap support kar sakte hain!")
+    try:
+        st.image("qr.jpg", width=200)
+    except:
+        pass
