@@ -1,46 +1,31 @@
 import streamlit as st
-from google import genai
-from google.genai import types
+import google.generativeai as genai
 import os
-import time
 import asyncio
 import edge_tts
+import time
 
-# Website ki Premium Settings
-st.set_page_config(page_title="Hanuman AI", page_icon="🔱", layout="centered")
+st.set_page_config(page_title="Hanuman AI", page_icon="🔱", layout="wide")
 
-# Custom CSS — UI
+# Custom CSS for Premium Theme
 st.markdown("""
-    <style>
-    .stApp {
-        background-color: #0f111a;
-        color: #e6e6fa;
-    }
-    h1 {
-        color: #ff6f00 !important;
-        font-family: 'Helvetica Neue', sans-serif;
-        font-weight: 800;
-    }
-    .stChatInputContainer textarea {
-        background-color: #1a1c24 !important;
-        color: white !important;
-        border: 1px solid #ff6f00 !important;
+<style>
+    [data-testid="stSidebar"] {
+        background-color: #0e1117;
     }
     .stButton>button {
-        background-color: #ff6f00 !important;
+        background-color: #ff4b4b !important;
         color: white !important;
         border-radius: 8px;
     }
-    </style>
+</style>
 """, unsafe_allow_html=True)
 
-# --- SECURITY UPGRADE ---
-# Ab key code me nahi rahegi, Streamlit ke online dashboard se secure uthayi jayegi
+# SECURITY UPGRADE - API KEY
 if "GEMINI_API_KEY" in st.secrets:
     API_KEY = st.secrets["GEMINI_API_KEY"]
 else:
-    # Local laptop par chalane ke liye backup (agar online na ho toh)
-    API_KEY = "AIzaSyC3ABaVaz_CcltYSDQ75sRUIaQtCwCoW8k"
+    API_KEY = "AIzaSyC38ARVgx_CclzYSDO7SyRJeLQcCvCsNBs"
 
 client = genai.Client(api_key=API_KEY)
 
@@ -58,6 +43,16 @@ with st.sidebar:
     st.write("---")
     st.caption("Developed with ❤️ by Abhimanyu")
 
+    # --- SIDEBAR SUPPORT SECTION ---
+    st.markdown("---")
+    st.subheader("🔱 Support This Project")
+    with st.sidebar.expander("💸 Click here to Scan & Pay"):
+        st.markdown(":white[Agar aapko Hanuman AI pasand aaya, toh aap support kar sakte hain!]")
+        try:
+            st.image("qr.jpg", width=200)
+        except:
+            pass
+
 # Main Screen Heading
 st.title("🔱 Hanuman AI")
 st.caption("Gyan, Buddhi, Vision aur Voice ke sath — Aapke har sawaal aur kaam ka saathi")
@@ -67,7 +62,7 @@ st.write("---")
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Purani chat screen par dikhana
+# Purani chat screen par dikhane ke liye
 for message in st.session_state.messages:
     with st.chat_message(message["role"], avatar="🔱" if message["role"]=="assistant" else None):
         st.markdown(message["content"])
@@ -84,7 +79,7 @@ if uploaded_file is not None:
 # Function to generate premium voice
 async def generate_premium_voice(text, filename):
     voice = "hi-IN-MadhurNeural"
-    communicate = edge_tts.Communicate(text, voice, rate="+10%") 
+    communicate = edge_tts.Communicate(text, voice, rate="+10%")
     await communicate.save(filename)
 
 # User Input Box
@@ -95,7 +90,7 @@ if prompt := st.chat_input("Hanuman Ji se kuch bhi poochhein..."):
 
     system_instruction = (
         "Aapka naam Hanuman AI hai. Aap ek bohot hi gyaani, helpful, polite aur sankat-mochan AI hain. "
-        "Aap user ki har kaam me madad karte hain jahe wo coding ho, media editing ho, stock market gyan ho, ya koi gyaan ki baat. "
+        "Aap user ki har kaam me madad karte hain chahe wo coding ho, media editing ho, stock market gyan ho, ya koi gyaan ki baat. "
         "Hamesha humble aur respectful rahein aur 'Jai Shree Ram' ka aadar karein."
     )
 
@@ -111,21 +106,20 @@ if prompt := st.chat_input("Hanuman Ji se kuch bhi poochhein..."):
                 if uploaded_file is not None:
                     file_bytes = uploaded_file.read()
                     if uploaded_file.type in ["image/png", "image/jpeg", "image/jpg"]:
-                        contents_payload.append(types.Part.from_bytes(data=file_bytes, mime_type=uploaded_file.type))
+                        contents_payload.append({"data": file_bytes, "mime_type": uploaded_file.type})
                     else:
                         file_text = file_bytes.decode("utf-8")
-                        contents_payload.append(f"\n\n[Uploaded File Content:\n{file_text}]")
-
+                        contents_payload.append(f"\\n\\n[Uploaded File Content:\\n{file_text}]")
+                
                 response = client.models.generate_content(
                     model='gemini-2.5-flash',
                     contents=contents_payload,
                     config={"system_instruction": system_instruction}
                 )
                 break
-                
             except Exception as e:
                 if "503" in str(e) and attempt < max_retries - 1:
-                    message_placeholder.warning(f"Server busy hai, fir se koshish kar raha hoon...")
+                    message_placeholder.warning("Server busy hai, fir se koshish kar raha hoon...")
                     time.sleep(2)
                 else:
                     st.error(f"Kuch galti hui: {e}")
@@ -148,15 +142,5 @@ if prompt := st.chat_input("Hanuman Ji se kuch bhi poochhein..."):
                     st.session_state.messages.append({"role": "assistant", "content": ai_response, "audio": audio_filename})
                 else:
                     st.error("Audio block write error.")
-                
             except Exception as voice_err:
                 st.error(f"Text aa gaya par audio me dikkat: {voice_err}")
-# --- SIDEBAR SUPPORT SECTION ---
-st.sidebar.markdown("---")
-st.sidebar.subheader("🔱 Support This Project")
-with st.sidebar.expander("💸 Click here to Scan & Pay"):
-    st.write("Agar aapko Hanuman AI pasand aaya, toh aap support kar sakte hain!")
-    try:
-        st.image("qr.jpg", width=200)
-    except:
-        pass
