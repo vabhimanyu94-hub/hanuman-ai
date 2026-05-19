@@ -7,7 +7,7 @@ import time
 
 st.set_page_config(page_title="Hanuman AI", page_icon="🔱", layout="wide")
 
-# Custom CSS for Premium Theme & Chat Bar Attachment
+# Custom CSS for Premium Theme & Fixed ChatGPT Style Bottom Layout
 st.markdown("""
 <style>
     /* Saare unnecessary elements hide karne ke liye */
@@ -18,7 +18,7 @@ st.markdown("""
     [data-testid="stAppToolbar"] {display: none !important;}
     footer {display: none !important;}
     
-    /* Center Layout Configuration */
+    /* Layout styling */
     div.block-container {
         max-width: 700px !important;
         margin: 0 auto !important;
@@ -26,13 +26,26 @@ st.markdown("""
     
     .stAppViewMain > div > div {
         padding-top: 3rem !important;
+        padding-bottom: 120px !important; /* Taaki chat history chat input ke piche na chhupe */
     }
     
-    /* File uploader ko chat bar ke upar barabar chipkane ke liye custom styling */
+    /* MAGIC TRICK: File uploader ko poori tarah niche chat input ke sath fix karne ke liye */
     [data-testid="stFileUploader"] {
-        max-width: 100% !important;
-        margin-top: -10px !important;
-        padding-bottom: 10px !important;
+        position: fixed !important;
+        bottom: 95px !important; /* Chat input ke just upar space */
+        max-width: 700px !important;
+        width: 100% !important;
+        z-index: 999999 !important;
+        background-color: #0e1117 !important; /* Match default theme */
+    }
+    
+    /* Fixed Chat input block layout placement align karne ke liye */
+    [data-testid="stChatInput"] {
+        position: fixed !important;
+        bottom: 30px !important;
+        max-width: 700px !important;
+        width: 100% !important;
+        z-index: 1000000 !important;
     }
     
     /* Sidebar styling */
