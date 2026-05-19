@@ -18,15 +18,23 @@ st.markdown("""
     [data-testid="stAppToolbar"] {display: none !important;}
     footer {display: none !important;}
     
-    /* Main Content aur Upload Box ko Center me laane ke liye */
-    .main-title-container {
-        text-align: center;
-        margin-bottom: 5px;
+    /* Main Content aur Upload Box ko Ek Sath Merge aur Center karne ke liye */
+    .stAppViewMain > div > div {
+        padding-top: 2rem !important;
     }
-    [data-testid="stFileUploader"] {
-        max-width: 650px;
+    
+    /* Heading aur Uploader ko pass laane ke liye spacing zero */
+    div.block-container {
+        max-width: 700px !important;
         margin: 0 auto !important;
-        padding-top: 10px;
+        text-align: center !important;
+    }
+    
+    /* File Uploader styling aur center border alignment */
+    [data-testid="stFileUploader"] {
+        max-width: 100% !important;
+        margin-top: -15px !important;
+        padding-top: 0px !important;
     }
     
     /* Sidebar styling */
@@ -74,13 +82,9 @@ with st.sidebar:
             st.image("qr.jpg", width=200)
         except:
             pass
-# Main Screen Heading (Centered)
-st.markdown("""
-    <div class="main-title-container">
-        <h1 style="font-size: 2.8rem; font-weight: 700; color: white; margin-bottom: 0px;">🔱 Hanuman AI</h1>
-        <p style="color: #a3a8b4; font-size: 1rem; margin-top: 5px; margin-bottom: 20px;">Gyan, Buddhi, Vision aur Voice ke sath — Aapke har sawaal aur kaam ka saathi</p>
-    </div>
-""", unsafe_allow_html=True)
+# Main Screen Heading (Asli Streamlit Title - Centered)
+st.title("🔱 Hanuman AI")
+st.caption("Gyan, Buddhi, Vision aur Voice ke sath — Aapke har sawaal aur kaam ka saathi")
 
 # Chat history initialize karna
 if "messages" not in st.session_state:
