@@ -7,19 +7,29 @@ import time
 
 st.set_page_config(page_title="Hanuman AI", page_icon="🔱", layout="wide")
 
-# Custom CSS for Premium Theme & Hiding All Unwanted Elements
+# Custom CSS for Premium Theme & Center Alignment
 st.markdown("""
 <style>
-    /* Top aur Bottom ke saare GitHub/Streamlit icons hide karne ke liye */
+    /* Saare unnecessary elements hide karne ke liye */
     #MainMenu, header, footer {visibility: hidden;}
     .stAppDeployButton {display: none !important;}
     [data-testid="stMainMenuGitHubIcon"] {display: none !important;}
-    
-    /* Bottom right corner ke profile aur deploy viewer icons ko completely block karne ke liye */
     [data-testid="stViewerStatus"] {display: none !important;}
     [data-testid="stAppToolbar"] {display: none !important;}
     footer {display: none !important;}
     
+    /* Main Content aur Upload Box ko Center me laane ke liye */
+    .main-title-container {
+        text-align: center;
+        margin-bottom: 5px;
+    }
+    [data-testid="stFileUploader"] {
+        max-width: 650px;
+        margin: 0 auto !important;
+        padding-top: 10px;
+    }
+    
+    /* Sidebar styling */
     [data-testid="stSidebar"] {
         background-color: #0e1117;
     }
@@ -64,10 +74,13 @@ with st.sidebar:
             st.image("qr.jpg", width=200)
         except:
             pass
-# Main Screen Heading
-st.title("🔱 Hanuman AI")
-st.caption("Gyan, Buddhi, Vision aur Voice ke sath — Aapke har sawaal aur kaam ka saathi")
-st.write("---")
+# Main Screen Heading (Centered)
+st.markdown("""
+    <div class="main-title-container">
+        <h1 style="font-size: 2.8rem; font-weight: 700; color: white; margin-bottom: 0px;">🔱 Hanuman AI</h1>
+        <p style="color: #a3a8b4; font-size: 1rem; margin-top: 5px; margin-bottom: 20px;">Gyan, Buddhi, Vision aur Voice ke sath — Aapke har sawaal aur kaam ka saathi</p>
+    </div>
+""", unsafe_allow_html=True)
 
 # Chat history initialize karna
 if "messages" not in st.session_state:
